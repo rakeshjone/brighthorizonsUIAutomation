@@ -1,12 +1,16 @@
 package util;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 import java.time.Duration;
+import java.util.NoSuchElementException;
 
 public class DriverManager {
     private WebDriver webDriver = null;
@@ -55,7 +59,6 @@ public class DriverManager {
     public String getPageTitle(){
         return webDriver.getTitle();
     }
-    public String getPageURI() { return webDriver.getCurrentUrl();}
 
     public void closeDriver(){
         if (webDriver !=null){
@@ -76,5 +79,19 @@ public class DriverManager {
 
     public void remove(){
         manager.remove();
+    }
+
+    public void pageReady(){
+        Wait wait = fluentWait();
+        wait.until(webDriver -> ((JavascriptExecutor) webDriver)
+                .executeScript("return document.readyState").equals("complete"));
+    }
+
+    public Wait<WebDriver> fluentWait(){
+        Wait<WebDriver> wait = new FluentWait<WebDriver>(webDriver)
+                .withTimeout(Duration.ofSeconds(Integer.parseInt(ConfigurationManager.getInstance().getProperty("Timeout"))))
+                .pollingEvery(Duration.ofMillis(Integer.parseInt(ConfigurationManager.getInstance().getProperty("Polling"))))
+                .ignoring(NoSuchElementException.class);
+        return wait;
     }
 }
