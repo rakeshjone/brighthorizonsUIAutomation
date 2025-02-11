@@ -1,6 +1,7 @@
 package util;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 
@@ -50,6 +51,12 @@ public class Browser {
     public static String getTextFromElement(WebElement element) {
         waitForElementVisibility(element);
         return element.getText();
+    }
+
+    public static void onBlurEvent(WebElement element) {
+        ((JavascriptExecutor)DriverManager.getInstance().Driver).executeScript(
+                "arguments[0].dispatchEvent(new Event('blur'))",
+                element);
     }
 
     public static void focusOnElement(WebElement element){

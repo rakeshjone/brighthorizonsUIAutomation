@@ -8,14 +8,14 @@ public class brightHorizons {
     private static searchPage searchPage = null;
 
     public static homePage homePage() {
-        return new homePage("Welcome to Bright Horizons | Bright Horizons®");
+        return new homePage("Welcome to Bright Horizons | Bright Horizons");
     }
 
     public static childCareLocatorPage childCareLocatorPage() {
-        return new childCareLocatorPage("Find a Child Care Center or Preschool | Bright Horizons®");
+        return new childCareLocatorPage("Find a Child Care Center or Preschool | Bright Horizons");
     }
 
     public static searchPage searchPage() {
-        return new searchPage("Search | Bright Horizons®");
+        return new searchPage("Search | Bright Horizons");
     }
 }

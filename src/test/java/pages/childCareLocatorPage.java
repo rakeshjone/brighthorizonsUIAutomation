@@ -15,8 +15,6 @@ public class childCareLocatorPage extends basePage {
         super(pageTitle);
     }
 
-    private WebElement locationInputBox = DriverManager.getInstance().Driver.findElement(By.id("addressInput"));
-
     public void verifyPageURLContains(String text) {
         Assert.assertTrue("Page URI does not contain " + text
                 + " as expected. New page URI is: " + Browser.getPageURI(), Browser.getPageURI().contains(text));
@@ -24,9 +22,14 @@ public class childCareLocatorPage extends basePage {
 
     public void enterTextInLocationInputBox(String text) {
         Browser.waitForPageReady();
+        WebElement locationInputBox = DriverManager.getInstance().Driver.findElement(By.id("addressInput"));
         Browser.waitForElementToBeClickable(locationInputBox);
-        Browser.focusOnElement(locationInputBox);
+        locationInputBox.click();
+        //Browser.focusOnElement(locationInputBox);
+
         Browser.enterTextInEditBox(locationInputBox, text);
+        Browser.onBlurEvent(locationInputBox);
+        locationInputBox.click();
         locationInputBox.sendKeys(Keys.ENTER);
     }
 
