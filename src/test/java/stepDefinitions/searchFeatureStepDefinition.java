@@ -18,14 +18,17 @@ public class searchFeatureStepDefinition {
     }
 
     @And("I enter search text {string}")
-    public void iEnterSearchText(String arg0) {
+    public void iEnterSearchText(String searchText) {
+        brightHorizons.homePage().enterSearchText(searchText);
     }
 
     @When("I click on search button")
     public void iClickOnSearchButton() {
+        brightHorizons.homePage().clickOnSearchButton();
     }
 
-    @Then("I will see search results contains serach text")
-    public void iWillSeeSearchResultsContainsSerachText() {
+    @Then("I will see search results contains search text {string}")
+    public void iWillSeeSearchResultsContainsSearchText(String searchText) {
+        brightHorizons.searchPage().verifyFirstSearchResultContains(searchText);
     }
 }

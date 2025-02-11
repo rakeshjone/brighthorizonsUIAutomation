@@ -1,7 +1,12 @@
 package util;
 
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.time.Duration;
 import java.util.function.BooleanSupplier;
 
 public class Browser {
@@ -18,6 +23,43 @@ public class Browser {
         waitForElementVisibility(element);
         element.click();
     }
+
+    public static void waitForElementToBeClickable(WebElement element) {
+        getFluentWait().until(ExpectedConditions.elementToBeClickable(element));
+    }
+
+    private static FluentWait<WebDriver> getFluentWait() {
+        return new FluentWait<WebDriver>((WebDriver) DriverManager.getInstance().Driver)
+                .withTimeout(Duration.ofSeconds(Integer.parseInt(ConfigurationManager.getInstance().getProperty("Timeout"))))
+                .pollingEvery(Duration.ofMillis(Integer.parseInt(ConfigurationManager.getInstance().getProperty("Polling"))))
+                .ignoring(NoSuchElementException.class)
+                .ignoring(ElementClickInterceptedException.class)
+                .ignoring(ElementNotInteractableException.class);
+    }
+
+    public static void enterTextInEditBox(WebElement element, String text) {
+        waitForElementVisibility(element);
+        element.clear();
+        element.sendKeys(text);
+    }
+
+    public static void waitForPageReady(){
+        DriverManager.getInstance().pageReady();
+    }
+
+    public static String getTextFromElement(WebElement element) {
+        waitForElementVisibility(element);
+        return element.getText();
+    }
+
+    public static void focusOnElement(WebElement element){
+        String javaScript = "var evObj = document.createEvent('MouseEvents');"
+                + "evObj.initMouseEvent(\"mouseover\",true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);"
+                + "arguments[0].dispatchEvent(evObj);";
+        ((JavascriptExecutor) DriverManager.getInstance().Driver).executeScript(javaScript, element);
+    }
+
+    public static String getPageURI() { return ((WebDriver) DriverManager.getInstance().Driver).getCurrentUrl();}
 
     private static void Retry(BooleanSupplier function)
     {
