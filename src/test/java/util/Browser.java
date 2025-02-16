@@ -55,8 +55,23 @@ public class Browser {
 
     public static void onBlurEvent(WebElement element) {
         ((JavascriptExecutor)DriverManager.getInstance().Driver).executeScript(
-                "arguments[0].dispatchEvent(new Event('blur'))",
+                "arguments[0].dispatchEvent(new Event('onblur'))",
                 element);
+    }
+
+    public static void onBlurEvent1(WebElement element) {
+        ((JavascriptExecutor)DriverManager.getInstance().Driver).executeScript(
+                "document.querySelector('#addressInput').focus",
+                element);
+    }
+
+    public static void waitForAttributeValue(WebElement element, String attribute, String expectedValue) {
+        Retry(() -> element.getDomAttribute(attribute).equals(expectedValue));
+    }
+
+    public static void enterTextUsingJS(WebElement element) {
+        JavascriptExecutor jse = (JavascriptExecutor)DriverManager.getInstance().Driver;
+        jse.executeScript("arguments[0].value='New York';", element);
     }
 
     public static void focusOnElement(WebElement element){
@@ -67,6 +82,22 @@ public class Browser {
     }
 
     public static String getPageURI() { return ((WebDriver) DriverManager.getInstance().Driver).getCurrentUrl();}
+
+    public static void waitForAPIResponse(int response) {
+        Retry(() -> DriverManager.getInstance().response == response);
+        DriverManager.getInstance().response = 0;
+    }
+
+    public static void waitForElementChildren(WebElement element, By childLocator, int minimumNumberOfChildrenNeeded) {
+        Retry(() -> element.findElements(childLocator).size() > minimumNumberOfChildrenNeeded);
+    }
+
+    public static void enterTextUsingActions(WebElement textField, String text) {
+        new Actions((WebDriver) DriverManager.getInstance().Driver)
+                .sendKeys(textField, text)
+                .build()
+                .perform();
+    }
 
     private static void Retry(BooleanSupplier function)
     {
