@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.devtools.v132.network.model.ResourceType;
 import util.Browser;
 import util.DriverManager;
 
@@ -16,20 +17,25 @@ public class childCareLocatorPage extends basePage {
     }
 
     public void verifyPageURLContains(String text) {
+        DriverManager.getInstance().startListeningToAPIResponses("AutocompletionService.GetPredictions", ResourceType.SCRIPT);
         Assert.assertTrue("Page URI does not contain " + text
                 + " as expected. New page URI is: " + Browser.getPageURI(), Browser.getPageURI().contains(text));
     }
 
     public void enterTextInLocationInputBox(String text) {
         Browser.waitForPageReady();
-        WebElement locationInputBox = DriverManager.getInstance().Driver.findElement(By.id("addressInput"));
-        Browser.waitForElementToBeClickable(locationInputBox);
-        locationInputBox.click();
-        //Browser.focusOnElement(locationInputBox);
+        WebElement locationInputBox = DriverManager.getInstance().Driver.findElement(By.cssSelector("#addressInput"));
+        //Browser.waitForElementToBeClickable(locationInputBox);
+        //Browser.clickOnElement(locationInputBox);
+        //Browser.waitForAttributeValue(locationInputBox,"class", "pac-target-input focus-visible");
+        //Browser.enterTextUsingJS(locationInputBox);
+        Browser.enterTextUsingActions(locationInputBox, "new");
+        Browser.waitForAPIResponse(200);
+        WebElement pacContainer = DriverManager.getInstance().Driver.findElement(By.xpath("//div[@class='pac-container pac-logo']"));
 
-        Browser.enterTextInEditBox(locationInputBox, text);
-        Browser.onBlurEvent(locationInputBox);
-        locationInputBox.click();
+        //Browser.onBlurEvent1(pacContainer);
+        //Browser.onBlurEvent(pacContainer);
+        Browser.waitForElementChildren(pacContainer, By.xpath("//div"), 1);
         locationInputBox.sendKeys(Keys.ENTER);
     }
 
